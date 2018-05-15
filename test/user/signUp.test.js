@@ -25,4 +25,22 @@ describe('POST /user/signup', () => {
         equal(userInDb.password, '123');
         equal(userInDb.name, 'Teo Nguyen');
     });
+
+    it('Cannot sign up without email', async () => {
+        const body = {
+            email: '',
+            password: '123',
+            name: 'Teo Nguyen'
+        };
+        const response = await request(app)
+        .post('/user/signup')
+        .send(body);
+        const { success, user, message } = response.body;
+        equal(response.status, 400);
+        equal(success, false);
+        equal(user, undefined);
+        equal(message, 'INVALID_USER_INFO');
+        const userInDb = await User.findOne({});
+        equal(userInDb, null);
+    });
 });
