@@ -12,7 +12,7 @@
   },
   "scripts": {
     "server": "nodemon src/index.js",
-    "test": "nodemon --exec mocha"
+    "test": "nodemon --exec mocha --recursive"
   },
   "devDependencies": {
     "mocha": "^5.1.1",
