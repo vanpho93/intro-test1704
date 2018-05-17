@@ -4,7 +4,7 @@ const { app } = require('../../src/app');
 const { User } = require('../../src/models/user.model');
 
 describe('POST /user/signup', () => {
-    it.only('Can sign up', async () => {
+    it('Can sign up', async () => {
         const body = {
             email: 'teo1@gmail.com',
             password: '123',
@@ -14,7 +14,6 @@ describe('POST /user/signup', () => {
         .post('/user/signup')
         .send(body);
         const { success, user } = response.body;
-        console.log(user);
         const { email, name, password, _id } = user;
         equal(response.status, 200);
         equal(success, true);
