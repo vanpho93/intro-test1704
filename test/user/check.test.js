@@ -28,18 +28,20 @@ describe('POST /user/check', () => {
         post('/user/check', {})
         .set({ token: 'abcd' });
         const { success, user, message } = response.body;
+        equal(response.status, 400);
         equal(success, false);
         equal(user, undefined);
-        equal(message, 'INVALID_USER_INFO');
+        equal(message, 'INVALID_TOKEN');
     });
 
     it('Cannot check without token', async () => {
         const response = await request(app).
         post('/user/check', {})
+        equal(response.status, 400);
         const { success, user, message } = response.body;
         equal(success, false);
         equal(user, undefined);
-        equal(message, 'INVALID_USER_INFO');
+        equal(message, 'EMPTY_TOKEN');
     });
 
     it('Cannot check with removed user\'s token', async () => {
@@ -48,8 +50,9 @@ describe('POST /user/check', () => {
         post('/user/check', {})
         .set({ token });
         const { success, user, message } = response.body;
+        equal(response.status, 404);
         equal(success, false);
         equal(user, undefined);
-        equal(message, 'INVALID_USER_INFO');
+        equal(message, 'CANNOT_FIND_USER');
     });
 });

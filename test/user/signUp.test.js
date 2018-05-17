@@ -38,7 +38,7 @@ describe('POST /user/signup', () => {
         equal(response.status, 400);
         equal(success, false);
         equal(user, undefined);
-        equal(message, 'INVALID_USER_INFO');
+        equal(message, 'EMPTY_EMAIL');
         const userInDb = await User.findOne({});
         equal(userInDb, null);
     });
