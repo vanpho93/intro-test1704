@@ -19,4 +19,11 @@ app.post('/user/signin', async (req, res) => {
     .catch(error => res.status(400).send({ success: false, message: 'INVALID_USER_INFO' }));
 });
 
+app.post('/user/check', async (req, res) => {
+    const { token } = req.headers;
+    UserService.check(token)
+    .then(user => res.send({ success: true, user }))
+    .catch(error => res.status(400).send({ success: false, message: 'INVALID_USER_INFO' }));
+});
+
 module.exports = { app };

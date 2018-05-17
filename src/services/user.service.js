@@ -30,7 +30,7 @@ class UserService {
         const { _id } = await verify(token);
         const user = await User.findById(_id);
         if (!user) throw new Error('CANNOT_FIND_USER');
-        return getUserObject(user);
+        return UserService.getUserObject(user);
     }
 }
 
