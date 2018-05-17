@@ -15,6 +15,8 @@ function verify(token) {
     return new Promise((resolve, reject) => {
         jwt.verify(token, SECRET_KEY, (error, obj) => {
             if (error) return reject(error);
+            delete obj.iat;
+            delete obj.exp;
             resolve(obj);
         });
     });

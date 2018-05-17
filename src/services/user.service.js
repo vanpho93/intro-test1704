@@ -1,5 +1,6 @@
 const { User } = require('../models/user.model');
 const { hash, compare } = require('bcrypt');
+const { sign } = require('../helpers/jwt');
 
 class UserService {
     static async signIn(email, password) {
@@ -8,6 +9,8 @@ class UserService {
         const same = await compare(password, user.password);
         if (!same) throw new Error('INVALID_USER_INFO');
         const userInfo = user.toObject();
+        const token = await sign({ _id: user._id });
+        userInfo.token = token;
         delete userInfo.password;
         return userInfo;
     }
