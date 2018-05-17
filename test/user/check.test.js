@@ -24,14 +24,32 @@ describe('POST /user/check', () => {
     });
 
     it('Cannot check with invalid token', async () => {
-
+        const response = await request(app).
+        post('/user/check', {})
+        .set({ token: 'abcd' });
+        const { success, user, message } = response.body;
+        equal(success, false);
+        equal(user, undefined);
+        equal(message, 'INVALID_USER_INFO');
     });
 
     it('Cannot check without token', async () => {
-
+        const response = await request(app).
+        post('/user/check', {})
+        const { success, user, message } = response.body;
+        equal(success, false);
+        equal(user, undefined);
+        equal(message, 'INVALID_USER_INFO');
     });
 
     it('Cannot check with removed user\'s token', async () => {
-
+        await User.findOneAndRemove({});
+        const response = await request(app).
+        post('/user/check', {})
+        .set({ token });
+        const { success, user, message } = response.body;
+        equal(success, false);
+        equal(user, undefined);
+        equal(message, 'INVALID_USER_INFO');
     });
 });
