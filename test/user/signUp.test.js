@@ -19,6 +19,7 @@ describe('POST /user/signup', () => {
         equal(success, true);
         equal(email, 'teo1@gmail.com');
         equal(name, 'Teo Nguyen');
+        equal(password, undefined);
         const userInDb = await User.findById(_id);
         equal(userInDb.email, 'teo1@gmail.com');
         equal(userInDb.name, 'Teo Nguyen');

@@ -20,9 +20,9 @@ describe('POST /user/signin', () => {
         };
         const response = await request(app).post('/user/signin').send(body);
         const { success, user } = response.body;
-        console.log(response.body);
         equal(success, true);
         equal(user.name, 'Teo Nguyen');
+        equal(user.password, undefined);
     });
 
     it('Cannot sign in with invalid password', async () => {
