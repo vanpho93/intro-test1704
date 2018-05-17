@@ -4,7 +4,7 @@ const { app } = require('../../src/app');
 const { User } = require('../../src/models/user.model');
 
 describe('POST /user/signup', () => {
-    it('Can sign up', async () => {
+    it.only('Can sign up', async () => {
         const body = {
             email: 'teo1@gmail.com',
             password: '123',
@@ -14,15 +14,14 @@ describe('POST /user/signup', () => {
         .post('/user/signup')
         .send(body);
         const { success, user } = response.body;
+        console.log(user);
         const { email, name, password, _id } = user;
         equal(response.status, 200);
         equal(success, true);
         equal(email, 'teo1@gmail.com');
-        equal(password, '123');
         equal(name, 'Teo Nguyen');
         const userInDb = await User.findById(_id);
         equal(userInDb.email, 'teo1@gmail.com');
-        equal(userInDb.password, '123');
         equal(userInDb.name, 'Teo Nguyen');
     });
 

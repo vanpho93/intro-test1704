@@ -1,4 +1,5 @@
 const { User } = require('../models/user.model');
+const { hash } = require('bcrypt');
 
 class UserService {
     static async signIn(email, password) {
@@ -8,7 +9,8 @@ class UserService {
     }
 
     static async signUp(email, password, name) {
-        const user = new User({ email, password, name });
+        const encrypted = await hash(password, 8);
+        const user = new User({ email, password: encrypted, name });
         await user.save();
         return user;
     }
