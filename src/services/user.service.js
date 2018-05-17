@@ -7,14 +7,18 @@ class UserService {
         if (!user) throw new Error('INVALID_USER_INFO');
         const same = await compare(password, user.password);
         if (!same) throw new Error('INVALID_USER_INFO');
-        return user;
+        const userInfo = user.toObject();
+        delete userInfo.password;
+        return userInfo;
     }
 
     static async signUp(email, password, name) {
         const encrypted = await hash(password, 8);
         const user = new User({ email, password: encrypted, name });
         await user.save();
-        return user;
+        const userInfo = user.toObject();
+        delete userInfo.password;
+        return userInfo;
     }
 }
 
