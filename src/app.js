@@ -1,11 +1,12 @@
 const express = require('express');
 const { json } = require('body-parser');
 const { UserService } = require('./services/user.service');
+const { StoryService } = require('./services/story.service');
 
 const app = express();
 app.use(json());
 
-app.post('/user/signup', async (req, res) => {
+app.post('/user/signup', (req, res) => {
     const { email, password, name } = req.body;
     UserService.signUp(email, password, name)
     .then(user => res.send({ success: true, user }))
@@ -17,7 +18,7 @@ app.post('/user/signup', async (req, res) => {
     });
 });
 
-app.post('/user/signin', async (req, res) => {
+app.post('/user/signin', (req, res) => {
     const { email, password } = req.body;
     UserService.signIn(email, password)
     .then(user => res.send({ success: true, user }))
@@ -29,7 +30,7 @@ app.post('/user/signin', async (req, res) => {
     });
 });
 
-app.post('/user/check', async (req, res) => {
+app.post('/user/check', (req, res) => {
     const { token } = req.headers;
     UserService.check(token)
     .then(user => res.send({ success: true, user }))
@@ -39,6 +40,12 @@ app.post('/user/check', async (req, res) => {
             .send({ success: false, message: error.message });
         if (!error.statusCode) console.log(error);
     });
+});
+
+app.get('/story', (req, res) => {
+});
+
+app.post('/story', (req, res) => {
 });
 
 module.exports = { app };
