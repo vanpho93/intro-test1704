@@ -36,4 +36,40 @@ describe('POST /user/signin', () => {
         equal(user, undefined);
         equal(message, 'INVALID_USER_INFO');
     });
+
+    it('Cannot sign in with invalid email', async () => {
+        const body = {
+            email: 'teo2@gmail.com',
+            password: '1234'
+        };
+        const response = await request(app).post('/user/signin').send(body);
+        const { success, user, message } = response.body;
+        equal(success, false);
+        equal(user, undefined);
+        equal(message, 'INVALID_USER_INFO');
+    });
+
+    it('Cannot sign in without email', async () => {
+        const body = {
+            password: '1234'
+        };
+        const response = await request(app).post('/user/signin').send(body);
+        const { success, user, message } = response.body;
+        equal(success, false);
+        equal(user, undefined);
+        equal(message, 'INVALID_USER_INFO');
+    });
+
+    it('Cannot sign in with removed user', async () => {
+        await User.remove({});
+        const body = {
+            email: 'teo1@gmail.com',
+            password: '123'
+        };
+        const response = await request(app).post('/user/signin').send(body);
+        const { success, user, message } = response.body;
+        equal(success, false);
+        equal(user, undefined);
+        equal(message, 'INVALID_USER_INFO');
+    });
 });
