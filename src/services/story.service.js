@@ -5,7 +5,7 @@ const { verify } = require('../helpers/jwt');
 
 class StoryService {
     static async getAllStories() {
-        return Story.find({});
+        return Story.find({}).populate('author', 'name');
     }
 
     static async createStory(token, content) {
@@ -15,7 +15,7 @@ class StoryService {
         if (!content) throw new ServerError('EMPTY_CONTENT', 400);
         const story = new Story({ author: _id, content });
         await story.save();
-        return story;
+        return Story.populate(story, { path: 'author', select: 'name' });
     }
 
     static async updateStory() {}
