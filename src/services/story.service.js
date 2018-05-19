@@ -2,6 +2,7 @@ const { User } = require('../models/user.model');
 const { Story } = require('../models/story.model');
 const { ServerError } = require('../models/server-error.model');
 const { verify } = require('../helpers/jwt');
+const { checkObjectId } = require('../helpers/checkObjectIds');
 
 class StoryService {
     static async getAllStories() {
@@ -21,7 +22,15 @@ class StoryService {
 
     static async updateStory() {}
 
-    static async removeStory() {}
+    static async removeStory(token, idStory) {
+        const { _id } = await verify(token).catch(() => {
+            throw new ServerError('INVALID_TOKEN', 400);
+        });
+        checkObjectId(idStory);
+        const story = await Story.findOneAndRemove({ _id: idStory, author: _id });
+        if (!story) throw new ServerError('CANNOT_FIND_STORY', 404);
+        return story;
+    }
 }
 
 module.exports = { StoryService };

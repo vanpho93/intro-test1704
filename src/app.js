@@ -64,4 +64,15 @@ app.post('/story', (req, res) => {
     });
 });
 
+app.delete('/story/:idStory', (req, res) => {
+    StoryService.removeStory(req.headers.token, req.params.idStory)
+    .then(story => res.send({ success: true, story }))
+    .catch(error => {
+        res
+            .status(error.statusCode || 500)
+            .send({ success: false, message: error.message });
+        if (!error.statusCode) console.log(error);
+    });
+});
+
 module.exports = { app };
