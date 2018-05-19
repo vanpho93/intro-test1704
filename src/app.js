@@ -53,6 +53,18 @@ app.get('/story', (req, res) => {
     });
 });
 
+app.put('/story/:idStory', (req, res) => {
+    const { headers, params, body } = req;
+    StoryService.updateStory(headers.token, params.idStory, body.content)
+    .then(story => res.send({ success: true, story }))
+    .catch(error => {
+        res
+            .status(error.statusCode || 500)
+            .send({ success: false, message: error.message });
+        if (!error.statusCode) console.log(error);
+    });
+});
+
 app.post('/story', (req, res) => {
     StoryService.createStory(req.headers.token, req.body.content)
     .then(story => res.send({ success: true, story }))

@@ -20,7 +20,16 @@ class StoryService {
         return Story.populate(story, { path: 'author', select: 'name' });
     }
 
-    static async updateStory() {}
+    static async updateStory(token, idStory, content) {
+        const { _id } = await verify(token).catch(() => {
+            throw new ServerError('INVALID_TOKEN', 400);
+        });
+        checkObjectId(idStory);
+        if (!content) throw new ServerError('EMPTY_CONTENT', 400);
+        const story = await Story.findOneAndUpdate({ _id: idStory, author: _id }, { content }, { new: true });
+        if (!story) throw new ServerError('CANNOT_FIND_STORY', 404);
+        return story;
+    }
 
     static async removeStory(token, idStory) {
         const { _id } = await verify(token).catch(() => {
