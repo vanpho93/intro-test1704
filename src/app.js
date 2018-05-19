@@ -43,9 +43,25 @@ app.post('/user/check', (req, res) => {
 });
 
 app.get('/story', (req, res) => {
+    StoryService.getAllStories()
+    .then(stories => res.send({ success: true, stories }))
+    .catch(error => {
+        res
+            .status(error.statusCode || 500)
+            .send({ success: false, message: error.message });
+        if (!error.statusCode) console.log(error);
+    });
 });
 
 app.post('/story', (req, res) => {
+    StoryService.createStory(req.headers.token, req.body.content)
+    .then(story => res.send({ success: true, story }))
+    .catch(error => {
+        res
+            .status(error.statusCode || 500)
+            .send({ success: false, message: error.message });
+        if (!error.statusCode) console.log(error);
+    });
 });
 
 module.exports = { app };

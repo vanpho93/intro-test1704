@@ -1,11 +1,22 @@
 const { User } = require('../models/user.model');
 const { Story } = require('../models/story.model');
 const { ServerError } = require('../models/server-error.model');
+const { verify } = require('../helpers/jwt');
 
 class StoryService {
-    static async getAllStories() {}
+    static async getAllStories() {
+        return Story.find({});
+    }
 
-    static async createStory() {}
+    static async createStory(token, content) {
+        const { _id } = await verify(token).catch(() => {
+            throw new ServerError('INVALID_TOKEN', 400);
+        });
+        if (!content) throw new ServerError('EMPTY_CONTENT', 400);
+        const story = new Story({ author: _id, content });
+        await story.save();
+        return story;
+    }
 
     static async updateStory() {}
 
