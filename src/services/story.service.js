@@ -15,6 +15,7 @@ class StoryService {
         if (!content) throw new ServerError('EMPTY_CONTENT', 400);
         const story = new Story({ author: _id, content });
         await story.save();
+        await User.findByIdAndUpdate(_id, { $push: { stories: story._id } });
         return Story.populate(story, { path: 'author', select: 'name' });
     }
 

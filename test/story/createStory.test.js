@@ -25,6 +25,8 @@ describe('POST /story', () => {
         equal(story.content, 'ABCD');
         equal(story.author._id, idUser);
         equal(story.author.name, 'Teo Nguyen');
+        const user = await User.findById(idUser).populate('stories');
+        equal(user.stories[0].content, 'ABCD');
     });
 
     it('Cannot create story without content', async () => {
