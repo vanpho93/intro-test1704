@@ -33,10 +33,83 @@ describe('PUT /story/:idStory', () => {
         equal(storyDb.content, 'XYZ');
     });
 
-    it.only('Cannot update story with empty content', async () => {})
-    it.only('Cannot update story with invalid id', async () => {})
-    it.only('Cannot update story with invalid token', async () => {})
-    it.only('Cannot update story without token', async () => {})
-    it.only('Cannot update story with token2', async () => {})
-    it.only('Cannot update a removed story', async () => {})
+    it('Cannot update story with empty content', async () => {
+        const response = await request(app)
+        .put('/story/' + idStory)
+        .set({ token: token1 })
+        .send({ content: '' });
+        const { success, message, story } = response.body;
+        equal(response.status, 400);
+        equal(success, false);
+        equal(message, 'EMPTY_CONTENT');
+        equal(story, undefined);
+        const storyDb = await Story.findById(idStory);
+        equal(storyDb.content, 'ABCD');
+    })
+    it('Cannot update story with invalid id', async () => {
+        const response = await request(app)
+        .put('/story/123')
+        .set({ token: token1 })
+        .send({ content: 'XYZ' });
+        const { success, message, story } = response.body;
+        equal(response.status, 400);
+        equal(success, false);
+        equal(message, 'INVALID_ID');
+        equal(story, undefined);
+        const storyDb = await Story.findById(idStory);
+        equal(storyDb.content, 'ABCD');
+    })
+    it('Cannot update story with invalid token', async () => {
+        const response = await request(app)
+        .put('/story/' + idStory)
+        .set({ token: 'abcd' })
+        .send({ content: 'XYZ' });
+        const { success, message, story } = response.body;
+        equal(response.status, 400);
+        equal(success, false);
+        equal(message, 'INVALID_TOKEN');
+        equal(story, undefined);
+        const storyDb = await Story.findById(idStory);
+        equal(storyDb.content, 'ABCD');
+    })
+    it('Cannot update story without token', async () => {
+        const response = await request(app)
+        .put('/story/' + idStory)
+        .send({ content: 'XYZ' });
+        const { success, message, story } = response.body;
+        equal(response.status, 400);
+        equal(success, false);
+        equal(message, 'INVALID_TOKEN');
+        equal(story, undefined);
+        const storyDb = await Story.findById(idStory);
+        equal(storyDb.content, 'ABCD');
+    })
+    it('Cannot update story with token2', async () => {
+        const response = await request(app)
+        .put('/story/' + idStory)
+        .set({ token: token2 })
+        .send({ content: 'XYZ' });
+        const { success, message, story } = response.body;
+        equal(response.status, 404);
+        equal(success, false);
+        equal(message, 'CANNOT_FIND_STORY');
+        equal(story, undefined);
+        const storyDb = await Story.findById(idStory);
+        equal(storyDb.content, 'ABCD');
+    });
+
+    it('Cannot update a removed story', async () => {
+        await StoryService.removeStory(idUser1, idStory);
+        const response = await request(app)
+        .put('/story/' + idStory)
+        .set({ token: token1 })
+        .send({ content: 'XYZ' });
+        const { success, message, story } = response.body;
+        equal(response.status, 404);
+        equal(success, false);
+        equal(message, 'CANNOT_FIND_STORY');
+        equal(story, undefined);
+        const storyDb = await Story.findById(idStory);
+        equal(storyDb, null);
+    })
 });
