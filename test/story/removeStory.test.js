@@ -16,7 +16,7 @@ describe('DELET /story/:idStory', () => {
         const user2 = await UserService.signUp('ti@gmail.com', '123', 'Ti Nguyen');
         token2 = user2.token;
         idUser2 = user2._id;
-        const story = await StoryService.createStory(token1, 'ABCD');
+        const story = await StoryService.createStory(idUser1, 'ABCD');
         idStory = story._id;
     });
 
@@ -72,7 +72,7 @@ describe('DELET /story/:idStory', () => {
     });
 
     it('Cannot remove story twice', async () => {
-        await StoryService.removeStory(token1, idStory);
+        await StoryService.removeStory(idUser1, idStory);
         const response = await request(app)
         .delete('/story/' + idStory)
         .set({ token: token1 });

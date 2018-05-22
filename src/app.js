@@ -2,6 +2,7 @@ const express = require('express');
 const { json } = require('body-parser');
 const { UserService } = require('./services/user.service');
 const { StoryService } = require('./services/story.service');
+const { verify } = require('./helpers/jwt');
 
 const app = express();
 app.use(json());
@@ -53,9 +54,22 @@ app.get('/story', (req, res) => {
     });
 });
 
+async function mustBeUser(req, res, next) {
+    try {
+        const { token } = req.headers;
+        const { _id } = await verify(token);
+        req.idUser = _id;
+        next();
+    } catch (error) {
+        res.status(400).send({ success: false, message: 'INVALID_TOKEN' });
+    }
+}
+
+app.use(mustBeUser);
+
 app.put('/story/:idStory', (req, res) => {
-    const { headers, params, body } = req;
-    StoryService.updateStory(headers.token, params.idStory, body.content)
+    const { params, body } = req;
+    StoryService.updateStory(req.idUser, params.idStory, body.content)
     .then(story => res.send({ success: true, story }))
     .catch(error => {
         res
@@ -66,7 +80,7 @@ app.put('/story/:idStory', (req, res) => {
 });
 
 app.post('/story', (req, res) => {
-    StoryService.createStory(req.headers.token, req.body.content)
+    StoryService.createStory(req.idUser, req.body.content)
     .then(story => res.send({ success: true, story }))
     .catch(error => {
         res
@@ -77,7 +91,7 @@ app.post('/story', (req, res) => {
 });
 
 app.delete('/story/:idStory', (req, res) => {
-    StoryService.removeStory(req.headers.token, req.params.idStory)
+    StoryService.removeStory(req.idUser, req.params.idStory)
     .then(story => res.send({ success: true, story }))
     .catch(error => {
         res

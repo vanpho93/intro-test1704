@@ -9,34 +9,25 @@ class StoryService {
         return Story.find({}).populate('author', 'name');
     }
 
-    static async createStory(token, content) {
-        const { _id } = await verify(token).catch(() => {
-            throw new ServerError('INVALID_TOKEN', 400);
-        });
+    static async createStory(idUser, content) {
         if (!content) throw new ServerError('EMPTY_CONTENT', 400);
-        const story = new Story({ author: _id, content });
+        const story = new Story({ author: idUser, content });
         await story.save();
-        await User.findByIdAndUpdate(_id, { $push: { stories: story._id } });
+        await User.findByIdAndUpdate(idUser, { $push: { stories: story._id } });
         return Story.populate(story, { path: 'author', select: 'name' });
     }
 
-    static async updateStory(token, idStory, content) {
-        const { _id } = await verify(token).catch(() => {
-            throw new ServerError('INVALID_TOKEN', 400);
-        });
+    static async updateStory(idUser, idStory, content) {
         checkObjectId(idStory);
         if (!content) throw new ServerError('EMPTY_CONTENT', 400);
-        const story = await Story.findOneAndUpdate({ _id: idStory, author: _id }, { content }, { new: true });
+        const story = await Story.findOneAndUpdate({ _id: idStory, author: idUser }, { content }, { new: true });
         if (!story) throw new ServerError('CANNOT_FIND_STORY', 404);
         return story;
     }
 
-    static async removeStory(token, idStory) {
-        const { _id } = await verify(token).catch(() => {
-            throw new ServerError('INVALID_TOKEN', 400);
-        });
+    static async removeStory(idUser, idStory) {
         checkObjectId(idStory);
-        const story = await Story.findOneAndRemove({ _id: idStory, author: _id });
+        const story = await Story.findOneAndRemove({ _id: idStory, author: idUser });
         if (!story) throw new ServerError('CANNOT_FIND_STORY', 404);
         return story;
     }
