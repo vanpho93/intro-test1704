@@ -10,7 +10,6 @@ storyRouter.get('/', (req, res) => {
     .catch(res.onError);
 });
 
-
 storyRouter.use(mustBeUser);
 
 storyRouter.put('/:idStory', (req, res) => {
