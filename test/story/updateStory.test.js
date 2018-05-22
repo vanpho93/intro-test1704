@@ -45,7 +45,8 @@ describe('PUT /story/:idStory', () => {
         equal(story, undefined);
         const storyDb = await Story.findById(idStory);
         equal(storyDb.content, 'ABCD');
-    })
+    });
+
     it('Cannot update story with invalid id', async () => {
         const response = await request(app)
         .put('/story/123')
@@ -58,7 +59,8 @@ describe('PUT /story/:idStory', () => {
         equal(story, undefined);
         const storyDb = await Story.findById(idStory);
         equal(storyDb.content, 'ABCD');
-    })
+    });
+
     it('Cannot update story with invalid token', async () => {
         const response = await request(app)
         .put('/story/' + idStory)
@@ -71,7 +73,8 @@ describe('PUT /story/:idStory', () => {
         equal(story, undefined);
         const storyDb = await Story.findById(idStory);
         equal(storyDb.content, 'ABCD');
-    })
+    });
+
     it('Cannot update story without token', async () => {
         const response = await request(app)
         .put('/story/' + idStory)
@@ -83,7 +86,8 @@ describe('PUT /story/:idStory', () => {
         equal(story, undefined);
         const storyDb = await Story.findById(idStory);
         equal(storyDb.content, 'ABCD');
-    })
+    });
+
     it('Cannot update story with token2', async () => {
         const response = await request(app)
         .put('/story/' + idStory)
@@ -111,5 +115,5 @@ describe('PUT /story/:idStory', () => {
         equal(story, undefined);
         const storyDb = await Story.findById(idStory);
         equal(storyDb, null);
-    })
+    });
 });

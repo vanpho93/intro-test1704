@@ -30,6 +30,8 @@ describe('DELET /story/:idStory', () => {
         equal(story.content, 'ABCD');
         const count = await Story.count({});
         equal(count, 0);
+        const user = await User.findById(idUser1);
+        equal(user.stories.length, 0);
     });
 
     it('Cannot remove story with invalid id', async () => {

@@ -29,6 +29,7 @@ class StoryService {
         checkObjectId(idStory);
         const story = await Story.findOneAndRemove({ _id: idStory, author: idUser });
         if (!story) throw new ServerError('CANNOT_FIND_STORY', 404);
+        await User.findByIdAndUpdate(idUser, { $pull: { stories: idStory } })
         return story;
     }
 }
